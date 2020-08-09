@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - 5427:5432
+    environment:
+      - POSTGRES_DB=exampledb
+      - POSTGRES_USER=exampleuser
+      - POSTGRES_PASSWORD=12345
+      - PGDATA=/var/lib/postgresql/data/pgdata
