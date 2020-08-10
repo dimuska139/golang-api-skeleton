@@ -10,20 +10,36 @@ import (
 	"github.com/dimuska139/golang-api-skeleton/config"
 	"github.com/dimuska139/golang-api-skeleton/database"
 	"github.com/dimuska139/golang-api-skeleton/services"
+	"github.com/jmoiron/sqlx"
 )
 
 // Injectors from wire.go:
 
-func InitializeUsersAPI(configPath string) (*api.UsersAPI, error) {
+func InitializeConfig(configPath string) (*config.Config, error) {
 	configConfig, err := config.NewConfig(configPath)
 	if err != nil {
 		return nil, err
 	}
-	db, err := database.NewDatabase(configConfig)
+	return configConfig, nil
+}
+
+func InitializeDatabase(cfg *config.Config) (*sqlx.DB, error) {
+	db, err := database.NewDatabase(cfg)
 	if err != nil {
 		return nil, err
 	}
+	return db, nil
+}
+
+func InitializeUsersAPI(db *sqlx.DB) (*api.UsersAPI, error) {
 	usersService := services.NewUsersService(db)
 	usersAPI := api.NewUsersAPI(usersService)
 	return usersAPI, nil
+}
+
+func InitializeAuthAPI(cfg *config.Config, db *sqlx.DB) (*api.AuthAPI, error) {
+	usersService := services.NewUsersService(db)
+	authService := services.NewAuthService(db, cfg, usersService)
+	authAPI := api.NewAuthAPI(usersService, authService)
+	return authAPI, nil
 }

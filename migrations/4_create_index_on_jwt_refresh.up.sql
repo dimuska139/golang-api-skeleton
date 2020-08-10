@@ -1,0 +1,1 @@
+CREATE INDEX CONCURRENTLY jwt_refresh_token_idx ON jwt_refresh (refresh_token);

@@ -6,3 +6,7 @@ database:
   user: exampleuser
   password: 12345
   max_connections: 10
+jwt:
+  secret: 1234567890
+  access_token_lifetime: 30000 # Seconds
+  refresh_token_lifetime: 604800 # Seconds (1 week)

@@ -4,6 +4,7 @@
 * Migrations ([golang-migrate](https://github.com/golang-migrate/migrate) + [pkger](https://github.com/markbates/pkger))
 * Compile-time Dependency Injection ([google/wire](https://github.com/google/wire))
 * Working with database (where is no [GORM](http://gorm.io/index.html) in this skeleton but you can easily integrate it)
+* Token-Based Authentication (with sliding sessions)
 
 Tests will be soon :)
 

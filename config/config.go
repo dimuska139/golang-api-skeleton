@@ -17,6 +17,11 @@ type Config struct {
 		Password       string
 		MaxConnections int `mapstructure:"max_connections"`
 	} `mapstructure:"database"`
+	Jwt struct {
+		Secret               string
+		AccessTokenLifetime  int `mapstructure:"access_token_lifetime"`
+		RefreshTokenLifetime int `mapstructure:"refresh_token_lifetime"`
+	} `mapstructure:"jwt"`
 }
 
 func NewConfig(configPath string) (*Config, error) {

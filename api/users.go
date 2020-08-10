@@ -40,28 +40,13 @@ func (a *UsersAPI) GetList(c *gin.Context) {
 	})
 }
 
-func (a *UsersAPI) CreateUser(c *gin.Context) {
-	type CreateUserDTO struct {
-		Email string `json:"email" binding:"required"`
-		Name  string `json:"name" binding:"required"`
-	}
-
-	var dto CreateUserDTO
-	if err := c.BindJSON(&dto); err != nil { // TODO: Implement user friendly errors handling
+func (a *UsersAPI) GetProfile(c *gin.Context) {
+	userPtr, ok := c.Get("user")
+	if !ok {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": "Something went wrong",
 		})
 		return
 	}
-
-	createdUser, err := a.UsersService.Create(dto.Email, dto.Name)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"user": *createdUser,
-	})
+	c.JSON(http.StatusOK, userPtr)
 }

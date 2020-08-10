@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/dimuska139/golang-api-skeleton/middlewares"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -17,17 +18,45 @@ func main() {
 	configPathPtr := flag.String("config", "config.yml", "Path to configuration file")
 	flag.Parse()
 
-	api, err := InitializeUsersAPI(*configPathPtr)
+	cfg, err := InitializeConfig(*configPathPtr)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	db, err := InitializeDatabase(cfg)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	usersApi, err := InitializeUsersAPI(db)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	authApi, err := InitializeAuthAPI(cfg, db)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	router := gin.Default()
-	users := router.Group("/users")
+	api := router.Group("/v1")
 	{
-		users.GET("/total", api.GetTotal)
-		users.POST("/create", api.CreateUser)
-		users.GET("", api.GetList)
+		users := api.Group("/users")
+		{
+			users.GET("/total", usersApi.GetTotal)
+			users.GET("", usersApi.GetList)
+		}
+		auth := api.Group("/auth")
+		{
+			auth.POST("/refresh-tokens", authApi.RefreshTokens)
+			auth.POST("/login", authApi.Login)
+			auth.POST("/registration", authApi.Registration)
+		}
+		private := api.Group("/private") // Authentication required
+		{
+			private.Use(middlewares.JwtMiddleware(cfg))
+			private.GET("/profile", usersApi.GetProfile)
+		}
 	}
 
 	srv := &http.Server{
