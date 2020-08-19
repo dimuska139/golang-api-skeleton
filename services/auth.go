@@ -80,7 +80,7 @@ func (a *AuthService) GenerateJwtPair(userDTO dto.UserDTO) (*dto.JwtPairDTO, err
 func (a *AuthService) InvalidateOldToken(refreshToken string) error {
 	// Appends 30 seconds handle multiple async requests from one client app. Without it the first request generates new
 	// refresh token and invalidates previous. So another requests fails because their token expired.
-	_, err := a.Database.Exec(`UPDATE jwt_refresh_tokens SET expires_at=now() + INTERVAL '30 seconds'
+	_, err := a.Database.Exec(`UPDATE jwt_refresh SET expires_at=now() + INTERVAL '30 seconds'
 		WHERE refresh_token=$1`, refreshToken)
 	return err
 }
