@@ -117,5 +117,13 @@ func (a *AuthAPI) RefreshTokens(c *gin.Context) {
 		})
 		return
 	}
+
+	if err := a.AuthService.InvalidateOldToken(dto.RefreshToken); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, *jwtPair)
 }
