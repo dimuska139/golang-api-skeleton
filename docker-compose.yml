@@ -5,6 +5,8 @@ services:
     image: postgres:latest
     ports:
       - 5427:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data/pgdata
     environment:
       - POSTGRES_DB=exampledb
       - POSTGRES_USER=exampleuser

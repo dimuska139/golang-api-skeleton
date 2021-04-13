@@ -2,9 +2,9 @@ package database
 
 import (
 	"github.com/dimuska139/golang-api-skeleton/config"
+	_ "github.com/dimuska139/golang-api-skeleton/migrations"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/pkger"
 	"github.com/jackc/pgx"
 	"github.com/jackc/pgx/stdlib"
 	"github.com/jmoiron/sqlx"
@@ -41,7 +41,7 @@ func NewDatabase(config *config.Config) (*sqlx.DB, error) {
 		log.Fatalln(err)
 	}
 
-	m, err := migrate.NewWithDatabaseInstance("pkger:///migrations", config.Database.Name, driver)
+	m, err := migrate.NewWithDatabaseInstance("embed://", config.Database.Name, driver)
 	if err != nil {
 		log.Fatalln(err)
 	}

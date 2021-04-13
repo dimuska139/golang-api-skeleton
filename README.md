@@ -12,15 +12,8 @@ Tests will be soon :)
 
 1. [Create migration file](https://github.com/golang-migrate/migrate/blob/master/MIGRATIONS.md) in `/migrations` directory 
 (also you can use [CLI](https://github.com/golang-migrate/migrate#cli-usage) for it).
-1. Convert migrations to `pkged.go` using  `pkger -include /migrations` command (it will be integrated to binary file)
 1. Build your application.
 1. Migrations applying automatically after you run compiled binary file.
-
-### Warning
-
-[Pkger](https://github.com/markbates/pkger) fails if your project contains folders and files to which it doesn't have 
-access. So you should not mapping docker volumes to projects folders. 
-Pkger [can't ignore them](https://github.com/markbates/pkger/pull/108).
 
 ## Dependency injection
 
