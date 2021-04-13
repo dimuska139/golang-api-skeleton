@@ -14,7 +14,7 @@ import (
 func parseToken(accessToken string, signingKey []byte) (*dto.UserDTO, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &dto.ClaimsDTO{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Invalid signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("invalid signing method: %v", token.Header["alg"])
 		}
 		return signingKey, nil
 	})
@@ -27,7 +27,7 @@ func parseToken(accessToken string, signingKey []byte) (*dto.UserDTO, error) {
 		return &claims.User, nil
 	}
 
-	return nil, errors.New("Invalid token")
+	return nil, errors.New("invalid token")
 }
 
 func JwtMiddleware(cfg *config.Config) gin.HandlerFunc {

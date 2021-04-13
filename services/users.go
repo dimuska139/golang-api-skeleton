@@ -28,7 +28,7 @@ func (a *UsersService) CountTotal() (int, error) {
 
 func (a *UsersService) List() ([]dto.UserDTO, error) {
 	// Using raw sql
-	rows, err := a.Database.Queryx("SELECT * FROM users")
+	rows, err := a.Database.Queryx("SELECT * FROM users ORDER BY id")
 
 	if err != nil {
 		return nil, errors.Wrap(err, "Getting users from database")
@@ -46,7 +46,13 @@ func (a *UsersService) List() ([]dto.UserDTO, error) {
 
 func (a *UsersService) GetByEmail(email string) (*dto.UserDTO, error) {
 	userDTO := dto.UserDTO{}
-	if err := a.Database.Get(&userDTO, "SELECT id, name, email, hash FROM users WHERE email=$1 LIMIT 1", email); err != nil {
+	q, _, _ := sq.Select("id", "name", "email", "hash").
+		From("users").
+		Where("email = ?").
+		Limit(1).
+		ToSql()
+
+	if err := a.Database.Get(&userDTO, q, email); err != nil {
 		return nil, &apiErrors.NotFoundError{S: "User not found"}
 	}
 
@@ -55,10 +61,15 @@ func (a *UsersService) GetByEmail(email string) (*dto.UserDTO, error) {
 
 func (a *UsersService) GetByToken(refreshToken string) (*dto.UserDTO, error) {
 	userDTO := dto.UserDTO{}
-	if err := a.Database.Get(&userDTO, `SELECT u.id, u.name, u.email, u.hash
-		FROM users u
-		LEFT JOIN jwt_refresh tokens ON tokens.user_id=u.id
-		WHERE tokens.refresh_token=$1 LIMIT 1`, refreshToken); err != nil {
+	q, _, _ := sq.Select("users.id", "users.name", "users.email", "users.hash").
+		From("users").
+		Join("jwt_refresh tokens ON users.id=tokens.user_id").
+		Where("tokens.refresh_token = ?").
+		Limit(1).
+		ToSql()
+
+
+	if err := a.Database.Get(&userDTO, q, refreshToken); err != nil {
 		return nil, &apiErrors.NotFoundError{S: "User not found"}
 	}
 
