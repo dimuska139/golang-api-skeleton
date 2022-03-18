@@ -1,3 +1,5 @@
+# DEPRECATED! See [go-api-layout](https://github.com/dimuska139/go-api-layout) please
+
 # Golang API skeleton
 
 * Config file reading ([viper](github.com/spf13/viper))
